@@ -1,0 +1,34 @@
+module micromachine(rst, clk, areg[4..0], breg[4..0], dreg[4..0], cmd_alu[5..0], oe_mem, write, switches[15..0] : dbus[31..0], N, Z, V, C, ir[31..0], leds[15..0])
+
+// Registers
+registers(rst, clk, areg[4..0], breg[4..0], dreg[4..0], dbus[31..0] : abus[31..0], bbus[31..0], ir[31..0])
+
+// CS
+decode4to16(abus[31..28] : cs[15..0])
+
+// ALU
+alu(abus[31..0], bbus[31..0], cmd_alu[5..0] : dbus_alu[31..0], enN, enZ, enVC, dN, dZ, dV, dC)
+
+// Flags
+N := dN on clk, reset when rst, enabled when enN
+Z := dZ on clk, reset when rst, enabled when enZ
+V := dV on clk, reset when rst, enabled when enVC
+C := dC on clk, reset when rst, enabled when enVC
+
+// RAM 512x512
+write_ram = write * cs[0]
+$ram_aread_swrite(clk, write_ram, abus[8..0], dbus[31..0]: dbus_ram[31..0])
+
+// Leds
+write_leds = write * cs[11]
+leds[15..0] := dbus[15..0] on clk, reset when rst, enabled when write_leds
+
+// Dbus
+dbus_from_alu = /oe_mem
+dbus_from_ram = oe_mem * cs[0]
+dbus_from_swt = oe_mem * cs[9]
+dbus[31..0] = dbus_alu[31..0] output enabled when dbus_from_alu
+dbus[31..0] = dbus_ram[31..0] output enabled when dbus_from_ram
+dbus[31..0] = "0000000000000000" & switches[15..0] output enabled when dbus_from_ram
+
+end module

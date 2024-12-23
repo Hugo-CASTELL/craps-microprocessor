@@ -1,0 +1,112 @@
+module sequencer(rst, clk, ir[31..0], N, Z, V, C : areg[4..0], breg[4..0], dreg[4..0], oe_mem, cmd_ual[5..0], write)
+
+// RAM Access or data in registers
+//                       1         t        memory access
+instruction_registers  = ir[31] * /ir[30] * /ir[13]
+instruction_ram_access = ir[31] * /ir[30] *  ir[13]
+
+// Branching management
+ble = Z + /N*V + N*/V                // branch less or equal signed
+bge = N*V + /N*/V		             // branch greater or equal signed
+bgu = /C*/Z 			             // branch greater and different unsigned
+branching_cond =  ir[28] * /ir[27] * /ir[26] * /ir[25]        +
+
+                 /ir[28] * /ir[27] * /ir[26] *  ir[25] *  Z   +
+                  ir[28] * /ir[27] * /ir[26] *  ir[25] * /Z   +
+
+                 /ir[28] *  ir[27] * /ir[26] *  ir[25] *  C   +
+                  ir[28] *  ir[27] * /ir[26] *  ir[25] * /C   +
+
+                 /ir[28] *  ir[27] *  ir[26] * /ir[25] *  N   +
+                  ir[28] *  ir[27] *  ir[26] * /ir[25] * /N   +
+
+                 /ir[28] *  ir[27] *  ir[26] *  ir[25] *  V   +
+                  ir[28] *  ir[27] *  ir[26] *  ir[25] * /V   +
+
+                 /ir[28] * /ir[27] *  ir[26] * /ir[25] *  ble +
+                  ir[28] * /ir[27] *  ir[26] * /ir[25] * /ble +
+
+                  ir[28] * /ir[27] *  ir[26] * /ir[25] *  bge +
+                 /ir[28] * /ir[27] *  ir[26] *  ir[25] * /bge +
+
+                  ir[28] *  ir[27] * /ir[26] * /ir[25] *  bgu +
+                 /ir[28] *  ir[27] * /ir[26] *  ir[25] * /bgu
+
+// State management
+fetch := pc_increment on clk, set when rst
+decode := fetch on clk, reset when rst
+branch_immediate = decode * /ir[31] * ir[29] * branching_cond // imm24 no condition
+branch := decode * /ir[31] * ir[29] * branching_cond on clk, reset when rst // disp25 with condition
+pc_increment := decode * instruction_registers + calc_imm on clk, reset when rst
+calc_imm := decode * instruction_ram_access on clk, reset when rst
+
+// Values for micromachine
+// Each value depends on the state
+// Reading this is code is better by looking at what is done at every state
+// For example, for fetch state, isolate the first line for every variable
+
+//       not branch * 000100 SUB alu command
+write_cond = ir[30] * /ir[24] * /ir[23] * /ir[22] * ir[21] * /ir[20] * /ir[19]
+
+//           0         1      = not arithmetic instruction
+oe_mem_cnd = /ir[31] + ir[30] 
+
+// Contains 0 :                        0
+// Contains 1 :                       20
+// Extend simm13, imm24 or disp25 :   21
+// Scheduler pointer Register :       29
+// PC Register :                      30
+// Instruction Return Register :      31
+
+cmd_ual[5..0] = fetch                           * "000000"   + // ADD
+				decode * instruction_registers  * ir[24..19] + // operation
+				decode * instruction_ram_access * "100000"   + // SIGNEXT13
+				branch_immediate                * "100001"   + // SIGNEXT25
+				branch                          * "000000"   + // ADD
+				calc_imm                        * ir[24..19] + // operation
+				pc_increment                    * "000000"     // ADD
+
+areg[4..0]    = fetch                           * "11110"    + // PC
+				decode * instruction_registers  * ir[18..14] + // 1st reg prog
+			   	decode * instruction_ram_access * "11111"    + // IR for extend
+				branch_immediate                * "11111"    + // IR for extend
+				branch                          * "11110"    + // PC
+			   	calc_imm                        * ir[18..14] + // 1st reg prog
+			   	pc_increment                    * "11101"      // PC
+             
+breg[4..0]    = fetch                           * "00000"    + // 0
+			   	decode * instruction_registers  * ir[4..0]   + // 2nd reg prog
+			   	decode * instruction_ram_access * "00000"    + // Not used
+				branch_immediate                * "00000"    + // Not used
+				branch                          * "10101"    + // 21 for extend
+			   	calc_imm                        * "10101"    + // 21 for extend
+			   	pc_increment                    * "10100"      // 1
+             
+dreg[4..0]    = fetch                           * "11111"    + // r31
+			   	decode * instruction_registers  * ir[29..25] + // dest register
+			   	decode * instruction_ram_access * "10101"    + // 21 for extend
+				branch_immediate                * "10101"    + // 21 for extend
+				branch                          * "11110"    + // PC
+			   	calc_imm                        * ir[29..25] + // dest register
+			   	pc_increment                    * "11101"      // PC
+      
+write         = fetch                           * 0          + // No write
+			   	decode * instruction_registers  * write_cond + // Write on condition
+			   	decode * instruction_ram_access * 0          + // No write on extend
+				branch_immediate                * 0          + // No write
+				branch                          * 0          + // No write
+			   	calc_imm                        * write_cond + // Write on condition
+			   	pc_increment                    * 0            // No write
+
+oe_mem        = fetch                           * 1          + // Dbus to switches or RAM
+			   	decode * instruction_registers  * oe_mem_cnd + // Dbus on condition
+			   	decode * instruction_ram_access * 0          + // Dbus ALU
+				branch_immediate                * 0          + // Dbus ALU
+				branch                          * 0          + // Dbus ALU
+			   	calc_imm                        * oe_mem_cnd + // Dbus on condition
+			   	pc_increment                    * 0            // Dbus ALU
+                
+// Do not pay attention : simulator needs
+bypass_not_used[12..0] = ir[12..0]
+
+end module

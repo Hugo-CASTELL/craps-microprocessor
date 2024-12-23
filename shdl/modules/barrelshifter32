@@ -1,0 +1,7 @@
+module barrelshifter32(e[31..0], nb[4..0], r : s[31..0])
+shift16(e[31..0], r, nb[4] : s16[31..0])
+shift8(s16[31..0], r, nb[3] : s8[31..0])
+shift4(s8[31..0], r, nb[2] : s4[31..0])
+shift2(s4[31..0], r, nb[1] : s2[31..0])
+shift1(s2[31..0], r, nb[0] : s[31..0])
+end module

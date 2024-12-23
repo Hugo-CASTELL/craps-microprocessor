@@ -1,0 +1,4 @@
+module adder4(a[3..0], b[3..0], carry_in : result[3..0], carry_out)
+adder2(a[1..0], b[1..0], carry_in : result[1..0], carry_calculated)
+adder2(a[3..2], b[3..2], carry_calculated : result[3..2], carry_out)
+end module

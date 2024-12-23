@@ -1,0 +1,135 @@
+module registers(rst, clk, areg[4..0], breg[4..0], dreg[4..0], dbus[31..0] : abus[31..0], bbus[31..0], ir[31..0])
+
+decode5to32(dreg[4..0], ddreg[31..0])
+decode5to32(areg[4..0], dareg[31..0])
+decode5to32(breg[4..0], dbreg[31..0])
+
+r0[31..0] = "00000000000000000000000000000000"
+abus[31..0] = r0[31..0] output enabled when dareg[0]
+bbus[31..0] = r0[31..0] output enabled when dbreg[0]
+
+r20[31..0]  = "00000000000000000000000000000001"
+abus[31..0] = r20[31..0] output enabled when dareg[20]
+bbus[31..0] = r20[31..0] output enabled when dbreg[20]
+
+r1[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[1]
+abus[31..0] = r1[31..0] output enabled when dareg[1]
+bbus[31..0] = r1[31..0] output enabled when dbreg[1]
+
+r2[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[2]
+abus[31..0] = r2[31..0] output enabled when dareg[2]
+bbus[31..0] = r2[31..0] output enabled when dbreg[2]
+
+r3[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[3]
+abus[31..0] = r3[31..0] output enabled when dareg[3]
+bbus[31..0] = r3[31..0] output enabled when dbreg[3]
+
+r4[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[4]
+abus[31..0] = r4[31..0] output enabled when dareg[4]
+bbus[31..0] = r4[31..0] output enabled when dbreg[4]
+
+r5[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[5]
+abus[31..0] = r5[31..0] output enabled when dareg[5]
+bbus[31..0] = r5[31..0] output enabled when dbreg[5]
+
+r6[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[6]
+abus[31..0] = r6[31..0] output enabled when dareg[6]
+bbus[31..0] = r6[31..0] output enabled when dbreg[6]
+
+r7[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[7]
+abus[31..0] = r7[31..0] output enabled when dareg[7]
+bbus[31..0] = r7[31..0] output enabled when dbreg[7]
+
+r8[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[8]
+abus[31..0] = r8[31..0] output enabled when dareg[8]
+bbus[31..0] = r8[31..0] output enabled when dbreg[8]
+
+r9[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[9]
+abus[31..0] = r9[31..0] output enabled when dareg[9]
+bbus[31..0] = r9[31..0] output enabled when dbreg[9]
+
+r10[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[10]
+abus[31..0] = r10[31..0] output enabled when dareg[10]
+bbus[31..0] = r10[31..0] output enabled when dbreg[10]
+
+r11[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[11]
+abus[31..0] = r11[31..0] output enabled when dareg[11]
+bbus[31..0] = r11[31..0] output enabled when dbreg[11]
+
+r12[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[12]
+abus[31..0] = r12[31..0] output enabled when dareg[12]
+bbus[31..0] = r12[31..0] output enabled when dbreg[12]
+
+r13[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[13]
+abus[31..0] = r13[31..0] output enabled when dareg[13]
+bbus[31..0] = r13[31..0] output enabled when dbreg[13]
+
+r14[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[14]
+abus[31..0] = r14[31..0] output enabled when dareg[14]
+bbus[31..0] = r14[31..0] output enabled when dbreg[14]
+
+r15[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[15]
+abus[31..0] = r15[31..0] output enabled when dareg[15]
+bbus[31..0] = r15[31..0] output enabled when dbreg[15]
+
+r16[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[16]
+abus[31..0] = r16[31..0] output enabled when dareg[16]
+bbus[31..0] = r16[31..0] output enabled when dbreg[16]
+
+r17[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[17]
+abus[31..0] = r17[31..0] output enabled when dareg[17]
+bbus[31..0] = r17[31..0] output enabled when dbreg[17]
+
+r18[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[18]
+abus[31..0] = r18[31..0] output enabled when dareg[18]
+bbus[31..0] = r18[31..0] output enabled when dbreg[18]
+
+r19[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[19]
+abus[31..0] = r19[31..0] output enabled when dareg[19]
+bbus[31..0] = r19[31..0] output enabled when dbreg[19]
+
+r21[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[21]
+abus[31..0] = r21[31..0] output enabled when dareg[21]
+bbus[31..0] = r21[31..0] output enabled when dbreg[21]
+
+r22[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[22]
+abus[31..0] = r22[31..0] output enabled when dareg[22]
+bbus[31..0] = r22[31..0] output enabled when dbreg[22]
+
+r23[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[23]
+abus[31..0] = r23[31..0] output enabled when dareg[23]
+bbus[31..0] = r23[31..0] output enabled when dbreg[23]
+
+r24[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[24]
+abus[31..0] = r24[31..0] output enabled when dareg[24]
+bbus[31..0] = r24[31..0] output enabled when dbreg[24]
+
+r25[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[25]
+abus[31..0] = r25[31..0] output enabled when dareg[25]
+bbus[31..0] = r25[31..0] output enabled when dbreg[25]
+
+r26[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[26]
+abus[31..0] = r26[31..0] output enabled when dareg[26]
+bbus[31..0] = r26[31..0] output enabled when dbreg[26]
+
+r27[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[27]
+abus[31..0] = r27[31..0] output enabled when dareg[27]
+bbus[31..0] = r27[31..0] output enabled when dbreg[27]
+
+r28[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[28]
+abus[31..0] = r28[31..0] output enabled when dareg[28]
+bbus[31..0] = r28[31..0] output enabled when dbreg[28]
+
+r29[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[29]
+abus[31..0] = r29[31..0] output enabled when dareg[29]
+bbus[31..0] = r29[31..0] output enabled when dbreg[29]
+
+r30[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[30]
+abus[31..0] = r30[31..0] output enabled when dareg[30]
+bbus[31..0] = r30[31..0] output enabled when dbreg[30]
+
+ir[31..0]  := dbus[31..0]  on clk, reset when rst, enabled when ddreg[31]
+abus[31..0] = ir[31..0] output enabled when dareg[31]
+bbus[31..0] = ir[31..0] output enabled when dbreg[31]
+
+end module

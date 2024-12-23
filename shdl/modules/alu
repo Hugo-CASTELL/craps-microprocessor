@@ -1,0 +1,76 @@
+module alu(a[31..0], b[31..0], cmd[5..0] : s[31..0], enN, enZ, enVC, N, Z, V, C)
+
+// Flags enabling
+enN = cmd[4] * /cmd[3] 
+enZ = cmd[4]
+enVC = enN * /cmd[1] * /cmd[0]
+
+// Command decoding
+decode6to64(cmd[5..0]: dcmd[63..0])
+
+// Commands
+is_addcc  = dcmd[16]
+is_subcc  = dcmd[20]
+is_umulcc = dcmd[26]
+is_andcc  = dcmd[17]
+is_orcc   = dcmd[18]
+is_xorcc  = dcmd[19]
+is_add    = dcmd[0]
+is_sub    = dcmd[4]
+is_and    = dcmd[1]
+is_or     = dcmd[2]
+is_xor    = dcmd[3]
+is_decalD = dcmd[13]
+is_decalG = dcmd[14]
+is_snext  = dcmd[32]
+is_snext2 = dcmd[33]
+is_sethi  = dcmd[35]
+is_nopb   = dcmd[40]
+
+// ADDCC - SUBCC - ADD - SUB
+is_substract = is_sub + is_subcc
+addsub32(a[31..0], b[31..0], is_substract : ret_addsub[31..0], dV, dC)
+s[31..0] = ret_addsub[31..0] output enabled when is_addcc + is_add + is_subcc + is_sub
+
+// UMULCC
+umult16x16(a[15..0], b[15..0]: ret_umul[31..0])
+s[31..0] = ret_umul[31..0] output enabled when is_umulcc
+
+// ANDCC - AND
+ret_and[31..0] = a[31..0] * b[31..0]
+s[31..0] = ret_and[31..0] output enabled when is_andcc + is_and
+
+// ORCC - OR
+ret_or[31..0] = a[31..0] + b[31..0]
+s[31..0] = ret_or[31..0] output enabled when is_orcc + is_or
+
+// XORCC + XOR
+ret_xor[31..0] = (a[31..0] * /b[31..0]) + (/a[31..0] * b[31..0])
+s[31..0] = ret_xor[31..0] output enabled when is_xorcc + is_xor
+
+// Shifting right or left
+barrelshifter32(a[31..0], b[4..0], is_decalD : ret_barrelshifter[31..0])
+s[31..0] = ret_barrelshifter[31..0] output enabled when is_decalG + is_decalD
+
+// SIGNEXT13, extension A bus, 13 bits to 32 bits
+ssignext13[31..0] = "0000000000000000000" * /a[12] + "1111111111111111111" * a[12] & a[12..0]
+ s[31..0] = ssignext13[31..0] output enabled when is_snext
+
+// SIGNEXT25, extension A bus, 25 bits to 32 bits
+ssignext25[31..0] = "0000000" * /a[24] + "1111111" * a[24] & a[24..0]
+s[31..0] = ssignext25[31..0] output enabled when is_snext2
+
+// SETHI, force 24 first MSB bits and 8 zeros
+ssethi[31..0] = a[23..0] & "00000000"
+s[31..0] = ssethi[31..0] output enabled when is_sethi
+
+// NOPB, no operation, get B bus
+s[31..0] = b[31..0] output enabled when is_nopb
+
+// Flags
+N = enN * s[31]
+Z = enZ * /s[31] * /s[30] * /s[29] * /s[28] * /s[27] * /s[26] * /s[25] * /s[24] * /s[23] * /s[22] * /s[21] * /s[20] * /s[19] * /s[18] * /s[17] * /s[16] * /s[15] * /s[14] * /s[13] * /s[12] * /s[11] * /s[10] * /s[9] * /s[8] * /s[7] * /s[6] * /s[5] * /s[4] * /s[3] * /s[2] * /s[1] * /s[0]
+V = dV * enVC
+C = dC * enVC
+
+end module

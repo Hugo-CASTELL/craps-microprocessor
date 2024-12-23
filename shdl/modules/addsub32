@@ -1,0 +1,15 @@
+module addsub32(a[31..0], b[31..0], sub : s[31..0], V, C)
+
+# Bit inversion depending on addition or substraction
+value[31..0] = b[31..0]*/sub + /b[31..0]*sub
+
+# Addition module
+adder32(a[31..0], value[31..0], sub : s[31..0], Cout)
+
+# Carry Flag
+xor2(Cout, sub: C)
+
+# Over&flow Flag
+V = (/a[31]*/value[31]*s[31]) + (a[31]*value[31]*/s[31])
+
+end module

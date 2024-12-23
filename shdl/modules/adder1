@@ -1,0 +1,4 @@
+module adder1(a,b,carry_in: result, carry_out)
+xor3(a, b, carry_in: result)
+carry_out = a*b + carry_in*(a + b)
+end module

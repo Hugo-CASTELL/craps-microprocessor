@@ -1,0 +1,4 @@
+module xor3(a,b,c : s)
+xor2(a,b:x)
+xor2(x,c:s)
+end module

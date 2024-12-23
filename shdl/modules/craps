@@ -1,0 +1,9 @@
+module craps(rst, clk, switches[15..0] : leds[15..0])
+
+# Sequencer: state management
+sequencer(rst, clk, ir[31..0], N, Z, V, C : areg[4..0], breg[4..0], dreg[4..0], oe_mem, cmd_alu[5..0], write)
+
+# Micromachine: alu, registers, ram, flags, dbus logic
+micromachine(rst, clk, areg[4..0], breg[4..0], dreg[4..0], cmd_alu[5..0], oe_mem, write, switches[15..0] : dbus[31..0], N, Z, V, C, ir[31..0], leds[15..0])
+
+end module

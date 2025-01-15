@@ -3,8 +3,6 @@
 A minimalistic FPGA CRAPS microprocessor implemented in SHDL* and designed in a RISC architecture which is a reduced computing instruction set. <br />
 This was an educational project directed by [Jean-Christophe Buisson](https://amazon.fr/stores/Jean-Christophe-Buisson/author/B004N2KQXM) at ENSEEIHT and I really enjoyed working on it to discover progamming logical logic circuits and how microprocessors work.
 
-### SHDL
-
 ## How it works
 
 The CRAPS microprocessor is deisgned around a deliberately minimalistic architecture.
@@ -66,10 +64,8 @@ With this method, it's easy to determine easily the group of intructions then th
 
 ![Opcodes](./docs/opcodes.png)
 
-![Example of an operation to bits](operation_to_bits_example.png)
+![Example of an operation to bits](./docs/operation_to_bits_example.png)
 
-### RAM 512x512
+### SHDL
 
-
-
-## How to use / simulate
+SHDL is a language for describing digital circuits in a simple and modular way. It is not a programming language; rather it allows for the description of the various equipotentials which compose a circuit and their combinatorial or sequential relationships. Once a design has been described correctly in SHDL, it can be 'powered up' and ran by simulation or synthesis in a real FPGA circuit.

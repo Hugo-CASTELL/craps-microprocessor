@@ -6,31 +6,50 @@ instruction_registers  = ir[31] * /ir[30] * /ir[13]
 instruction_ram_access = ir[31] * /ir[30] *  ir[13]
 
 // Branching management
-ble = Z + /N*V + N*/V                // branch less or equal signed
-bge = N*V + /N*/V		             // branch greater or equal signed
-bgu = /C*/Z 			             // branch greater and different unsigned
-branching_cond =  ir[28] * /ir[27] * /ir[26] * /ir[25]        +
+ba_test = "1"                     // branch always
+beq_test = Z                      // branch on equal (be, bz)
+bne_test = /Z                     // branch on not equal (bnz)
+bneg_test = N                     // branch on negative (bn)
+bpos_test = /N                    // branch on positive (bnn)
+bcs_test = C                      // branch on carry set (blu)
+bcc_test = /C                     // branch on carry clear (bgeu)
+bvs_test = V                      // branch on overflow set
+bvc_test = /V                     // branch on overflow clear
+bg_test = /Z * /(/N * V + N * /V) // branch on greater signed (bgt)
+bge_test = N*V + /N*/V            // branch greater or equal signed
+bl_test = /N*V + N*/V             // branch on less signed (blt)
+ble_test = Z + /N*V + N*/V        // branch less or equal signed
+bgu_test = /C*/Z                  // branch greater unsigned
+bgeu_test = /C                    // branch on greater or equal unsigned (bcc)
+blu_test = C                      // branch on less unsigned (bcs)
+bleu = Z + C                      // branch on less or equal signed
 
-                 /ir[28] * /ir[27] * /ir[26] *  ir[25] *  Z   +
-                  ir[28] * /ir[27] * /ir[26] *  ir[25] * /Z   +
+//                Instruction code                     * Test             
+branching_cond =  ir[28] * /ir[27] * /ir[26] * /ir[25] * ba_test    +
 
-                 /ir[28] *  ir[27] * /ir[26] *  ir[25] *  C   +
-                  ir[28] *  ir[27] * /ir[26] *  ir[25] * /C   +
+                 /ir[28] * /ir[27] * /ir[26] *  ir[25] * beq_test   +
+                  ir[28] * /ir[27] * /ir[26] *  ir[25] * bne_test   +
 
-                 /ir[28] *  ir[27] *  ir[26] * /ir[25] *  N   +
-                  ir[28] *  ir[27] *  ir[26] * /ir[25] * /N   +
+                 /ir[28] *  ir[27] *  ir[26] * /ir[25] * bneg_test  +
+                  ir[28] *  ir[27] *  ir[26] * /ir[25] * bpos_test  +
 
-                 /ir[28] *  ir[27] *  ir[26] *  ir[25] *  V   +
-                  ir[28] *  ir[27] *  ir[26] *  ir[25] * /V   +
+                 /ir[28] *  ir[27] * /ir[26] *  ir[25] * bcs_test   +
+                  ir[28] *  ir[27] * /ir[26] *  ir[25] * bcc_test   +
 
-                 /ir[28] * /ir[27] *  ir[26] * /ir[25] *  ble +
-                  ir[28] * /ir[27] *  ir[26] * /ir[25] * /ble +
+                 /ir[28] *  ir[27] *  ir[26] *  ir[25] * bvs_test   +
+                  ir[28] *  ir[27] *  ir[26] *  ir[25] * bvc_test   +
 
-                  ir[28] * /ir[27] *  ir[26] * /ir[25] *  bge +
-                 /ir[28] * /ir[27] *  ir[26] *  ir[25] * /bge +
+                  ir[28] * /ir[27] *  ir[26] * /ir[25] * bg_test    +
+                  ir[28] * /ir[27] *  ir[26] *  ir[25] * bge_test   +
 
-                  ir[28] *  ir[27] * /ir[26] * /ir[25] *  bgu +
-                 /ir[28] *  ir[27] * /ir[26] *  ir[25] * /bgu
+                 /ir[28] * /ir[27] *  ir[26] *  ir[25] * bl_test    +
+                 /ir[28] * /ir[27] *  ir[26] * /ir[25] * ble_test   +
+
+                  ir[28] *  ir[27] * /ir[26] * /ir[25] * bgu_test   +
+                  ir[28] *  ir[27] * /ir[26] *  ir[25] * bgeu_test  +
+
+                 /ir[28] *  ir[27] * /ir[26] *  ir[25] * blu_test   +
+                 /ir[28] *  ir[27] * /ir[26] * /ir[25] * bleu_test
 
 // State management
 fetch := pc_increment on clk, set when rst
